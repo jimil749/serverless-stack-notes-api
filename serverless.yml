@@ -19,6 +19,7 @@ provider:
   # under process.env.
   environment:
     tableName: notes
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -93,5 +94,16 @@ functions:
       - http:
           path: notes/{id}
           method: put
+          cors: true
+          authorizer: aws_iam
+  billing:
+    # Defines an HTTP API endpoint that calls the main function billing.js
+    # - path: url path is /billing
+    # -vmethod: POST request
+    handler: billing.main
+    events:
+      - http:
+          path: billing
+          method: post
           cors: true
           authorizer: aws_iam
